@@ -2,12 +2,27 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
-    index:{{ test }}
+    <div class="left">
+      <ol>
+        <li
+          v-for="(article, index) in articles"
+          :key="index"
+          @click="showArticle(article.url)"
+        >
+          {{ article.name.replace(/\.md/, "") }} - {{ article.size }} bytes
+        </li>
+      </ol>
+    </div>
+
+    <div class="right">
+      <div v-html="markdownToHtml"></div>
+    </div>
   </div>
 </template>
 
 <script>
 // import HelloWorld from "./components/HelloWorld.vue";
+import marked from "marked";
 
 export default {
   name: "App",
@@ -16,21 +31,98 @@ export default {
   },
   data() {
     return {
-      test: "",
+      articles: null,
+      markdown: "",
     };
+  },
+
+  methods: {
+    showArticle(url) {
+      this.axios.get(url).then((response) => {
+        // console.log(response.data.download_url)
+        this.axios
+          .get(response.data.download_url)
+          .then((response) => (this.markdown = response.data));
+      });
+    },
   },
   mounted() {
     this.axios
-      .get("https://raw.githubusercontent.com/v012345/notebook/master/index.md")
+      .get("https://api.github.com/repos/v012345/notebook/contents")
       .then((response) => {
-        console.log(response.data);
-        this.test = response.data;
+        this.articles = response.data;
+        if (this.articles) {
+          this.axios.get(this.articles[0].url).then((response) => {
+            this.axios
+              .get(response.data.download_url)
+              .then((response) => (this.markdown = response.data));
+          });
+        }
       });
+  },
+  computed: {
+    markdownToHtml() {
+      return marked(this.markdown);
+    },
   },
 };
 </script>
+<style lang="less" scoped>
+#app {
+  display: flex;
 
-<style>
+  .left {
+    background-color: rgb(48, 48, 48);
+    color: #ffffff;
+    width: 28vw;
+    margin-right: 2vw;
+    font-size: 1.2rem;
+
+    height: 100vh;
+    overflow: auto;
+    ol {
+      li {
+        cursor: pointer;
+        margin-bottom: 10px;
+        &:hover {
+          color: rgb(73, 139, 214);
+        }
+        &:active {
+          color: rgb(194, 23, 23);
+        }
+      }
+    }
+  }
+  .right {
+    width: 70vw;
+    height: 100vh;
+
+    overflow: auto;
+  }
+
+  /* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #707070 #ffffff;
+  }
+
+  /* Chrome, Edge, and Safari */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #707070;
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+  }
+}
+
 /* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -40,3 +132,5 @@ export default {
   margin-top: 60px;
 } */
 </style>
+
+
