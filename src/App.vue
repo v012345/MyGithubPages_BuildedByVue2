@@ -23,6 +23,8 @@
 <script>
 // import HelloWorld from "./components/HelloWorld.vue";
 import marked from "marked";
+import "highlight.js/styles/default.css";
+import hljs from "highlight.js";
 
 export default {
   name: "App",
@@ -35,7 +37,22 @@ export default {
       markdown: "",
     };
   },
-
+  created() {
+    marked.setOptions({
+      renderer: new marked.Renderer(),
+      highlight: function (code) {
+        return hljs.highlightAuto(code).value;
+      },
+      pedantic: false,
+      gfm: true,
+      tables: true,
+      breaks: false,
+      sanitize: false,
+      smartLists: true,
+      smartypants: false,
+      xhtml: false,
+    });
+  },
   methods: {
     showArticle(url) {
       this.axios.get(url).then((response) => {
