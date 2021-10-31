@@ -2,12 +2,14 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
+
     <div class="left">
       <ol>
         <li
           v-for="(article, index) in articles"
           :key="index"
-          @click="showArticle(article.url)"
+          :class="{ active: article.activated }"
+          @click="showArticle(article.url, index)"
         >
           {{ article.name.replace(/\.md/, "") }} - {{ article.size }} bytes
         </li>
@@ -15,7 +17,7 @@
     </div>
 
     <div class="right">
-      <div v-html="markdownToHtml"></div>
+      <Markdown :isLoading="isLoading" :markdown="markdown"></Markdown>
     </div>
   </div>
 </template>
@@ -23,18 +25,26 @@
 <script>
 // import HelloWorld from "./components/HelloWorld.vue";
 import marked from "marked";
-import "highlight.js/styles/default.css";
+
 import hljs from "highlight.js";
+import "highlight.js/styles/default.css";
+import Markdown from "./components/Markdown.vue";
+
+// import VueSpinners from "vue-spinners";
+// import "vue-spinners/dist/vue-spinners.css";
 
 export default {
   name: "App",
   components: {
     // HelloWorld,
+    Markdown,
   },
+
   data() {
     return {
-      articles: null,
+      articles: [],
       markdown: "",
+      isLoading: true,
     };
   },
   created() {
@@ -54,12 +64,18 @@ export default {
     });
   },
   methods: {
-    showArticle(url) {
+    showArticle(url, index) {
+      this.isLoading = true;
+      this.articles.forEach((item) => {
+        item.activated = false;
+      });
+      this.articles[index].activated = true;
       this.axios.get(url).then((response) => {
         // console.log(response.data.download_url)
-        this.axios
-          .get(response.data.download_url)
-          .then((response) => (this.markdown = response.data));
+        this.axios.get(response.data.download_url).then((response) => {
+          this.markdown = response.data;
+          this.isLoading = false;
+        });
       });
     },
   },
@@ -67,8 +83,12 @@ export default {
     this.axios
       .get("https://api.github.com/repos/v012345/notebook/contents")
       .then((response) => {
-        this.articles = response.data;
-        if (this.articles) {
+        if (response.data.length > 0) {
+          this.articles = response.data.map((value) => {
+            value.activated = false;
+            return value;
+          });
+          this.articles[0].activated = true;
           this.axios.get(this.articles[0].url).then((response) => {
             this.axios
               .get(response.data.download_url)
@@ -76,6 +96,7 @@ export default {
           });
         }
       });
+    this.isLoading = false;
   },
   computed: {
     markdownToHtml() {
@@ -107,13 +128,15 @@ export default {
         &:active {
           color: rgb(194, 23, 23);
         }
+        &.active {
+          color: greenyellow;
+        }
       }
     }
   }
   .right {
     width: 70vw;
     height: 100vh;
-
     overflow: auto;
   }
 

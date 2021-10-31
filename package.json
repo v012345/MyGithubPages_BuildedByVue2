@@ -15,7 +15,9 @@
     "less-loader": "^7.3.0",
     "marked": "^3.0.8",
     "vue": "^2.6.11",
-    "vue-axios": "^3.3.7"
+    "vue-axios": "^3.3.7",
+    "vue-loading-overlay": "^3.0.1",
+    "vue-spinners": "^1.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
