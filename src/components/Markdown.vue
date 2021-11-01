@@ -3,7 +3,7 @@
     <loading
       :active="isLoading"
       :can-cancel="true"
-      :on-cancel="true"
+      
       :is-full-page="false"
       backgroundColor="rgba(0,0,0,0.2)"
     />

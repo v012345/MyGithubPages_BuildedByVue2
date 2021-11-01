@@ -138,6 +138,11 @@ export default {
     width: 70vw;
     height: 100vh;
     overflow: auto;
+    /deep/ pre {
+      background-color: #e0e0e0;
+      padding: 0.5rem;
+      border-radius: 0.1rem;
+    }
   }
 
   /* ===== Scrollbar CSS ===== */
