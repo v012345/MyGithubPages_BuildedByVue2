@@ -1,13 +1,8 @@
 <template>
-  <div>
-    <loading
-      :active="isLoading"
-      :can-cancel="true"
-      
-      :is-full-page="false"
-      backgroundColor="rgba(0,0,0,0.2)"
-    />
-    <div v-html="markdownToHtml"></div>
+  <div class="Markdown">
+    <transition name="el-fade-in-linear">
+      <div v-show="show" v-html="markdownToHtml"></div>
+    </transition>
   </div>
 </template>
 
@@ -17,19 +12,30 @@ import marked from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/default.css";
 
-import Loading from "vue-loading-overlay";
-import "vue-loading-overlay/dist/vue-loading.css";
-
 export default {
   name: "Markdown",
   components: {
-    // HelloWorld,
-    Loading,
+    // HelloWorld
   },
-  props: ["isLoading", "markdown"],
-
+  beforeMount() {
+    this.$bus.$on("download_url", (url) => {
+      this.loading = true;
+      this.show = false;
+      setTimeout(() => {
+        this.axios.get(url).then((response) => {
+          this.markdown = response.data;
+          this.loading = false;
+          this.show = true;
+        });
+      }, 300);
+    });
+  },
   data() {
-    return {};
+    return {
+      loading: false,
+      markdown: "# v012345.github.io",
+      show: true,
+    };
   },
   created() {
     marked.setOptions({
@@ -47,7 +53,7 @@ export default {
       xhtml: false,
     });
   },
-
+  watch: {},
   computed: {
     markdownToHtml() {
       return marked(this.markdown);
@@ -56,5 +62,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.Markdown {
+  /deep/ pre {
+    background-color: #e0e0e075;
+    padding: 0.5rem;
+    border-radius: 0.1rem;
+  }
+}
 </style>

@@ -7,7 +7,9 @@ import "./plugins/element.js";
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
-console.log(process.env.NODE_ENV )
 new Vue({
+  beforeCreate() {
+    Vue.prototype.$bus = this; //全局事件总线
+  },
   render: h => h(App),
 }).$mount('#app')
