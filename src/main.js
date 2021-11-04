@@ -7,7 +7,7 @@ import "./plugins/element.js";
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
-
+console.log(process.env.NODE_ENV )
 new Vue({
   render: h => h(App),
 }).$mount('#app')
