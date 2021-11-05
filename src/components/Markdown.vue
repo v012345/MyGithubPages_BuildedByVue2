@@ -66,9 +66,33 @@ export default {
 <style lang="less" scoped>
 .Markdown {
   /deep/ pre {
-    background-color: #e0e0e075;
+    background-color: #f7f7f7;
     padding: 0.5rem;
     border-radius: 0.1rem;
+    overflow: auto;
+  }
+  /deep/ table{
+    word-break: break-all;
+  }
+
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #707070 #f7f7ff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f7f7f7;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #e7e7e7;
+    border-radius: 4px;
+    // border: 2px solid #ffffff;
   }
 }
 </style>

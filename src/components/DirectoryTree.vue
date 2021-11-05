@@ -3,6 +3,7 @@
     <transition name="el-zoom-in-top">
       <div v-show="show">
         <el-input
+          class="filter"
           placeholder="Filter keyword"
           v-model="filterText"
           prefix-icon="el-icon-search"
@@ -10,7 +11,7 @@
         </el-input>
 
         <el-tree
-          class="filter-tree"
+          class="tree"
           :data="tree"
           :props="defaultProps"
           :filter-node-method="filterNode"
@@ -53,8 +54,8 @@ export default {
     let DirectoryTree = [];
     generateDirectoryTree(this.url, DirectoryTree, this.axios);
     this.tree = DirectoryTree;
-    this.$emit("done");
     this.show = true;
+    this.$emit("done");
   },
   methods: {
     filterNode(value, data) {
@@ -62,8 +63,10 @@ export default {
       return data.label.indexOf(value) !== -1;
     },
     emitUrl(node) {
-      if (node.type == "file")
+      if (node.type == "file") {
         this.$bus.$emit("download_url", node.download_url);
+        this.$emit("title", node.label);
+      }
     },
   },
   props: {
@@ -88,6 +91,13 @@ export default {
 
 <style lang="less" scoped>
 .DirectoryTree {
+  /deep/ .el-input__inner{
+    background-color: rgb(233, 233, 233);
+  }
+  .tree {
+    background-color: rgb(233, 233, 233);
+  }
+
   /deep/ .el-tree-node:focus {
     color: rgb(92, 103, 197);
   }
