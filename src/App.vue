@@ -5,11 +5,13 @@
         <el-aside class="aside">
           <DirectoryTree
             url="https://api.github.com/repos/v012345/notebook/contents"
-            @done="closeLoading"
+            @done="getReady"
           ></DirectoryTree>
         </el-aside>
 
-        <el-main class="main"> <Markdown></Markdown> </el-main>
+        <el-main element-loading-background="rgba(255, 255, 255, 0.1)" v-loading="loading" class="main">
+          <Markdown @done="closeLoading"></Markdown>
+        </el-main>
       </el-container>
     </div>
 
@@ -36,20 +38,30 @@ export default {
   name: "App",
   components: { DirectoryTree, Markdown },
   beforeMount() {
-    this.loading = this.$loading({
+    this.fullLoading = this.$loading({
       lock: true,
       text: "Loading",
       spinner: "el-icon-loading",
       background: "rgba(0, 0, 0, 0)",
     });
   },
+  mounted() {
+    this.$bus.$on("download_url", () => {
+      this.loading = true;
+    });
+  },
   methods: {
+    getReady() {
+      this.fullLoading.close();
+    },
     closeLoading() {
-      this.loading.close();
+      this.loading = false;
     },
   },
   data() {
-    return {};
+    return {
+      loading: false,
+    };
   },
 };
 </script>

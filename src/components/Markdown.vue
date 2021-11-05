@@ -26,6 +26,7 @@ export default {
           this.markdown = response.data;
           this.loading = false;
           this.show = true;
+          this.$emit("done");
         });
       }, 300);
     });
