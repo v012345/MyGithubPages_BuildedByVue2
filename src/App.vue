@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="PCContainer">
+    <div class="PCContainer" v-if="$device == 'PC'">
       <el-container class="container">
         <el-aside class="aside">
           <DirectoryTree
@@ -9,23 +9,33 @@
           ></DirectoryTree>
         </el-aside>
 
-        <el-main element-loading-background="rgba(255, 255, 255, 0.1)" v-loading="loading" class="main">
+        <el-main
+          element-loading-background="rgba(255, 255, 255, 0.1)"
+          v-loading="loading"
+          class="main"
+        >
           <Markdown @done="closeLoading"></Markdown>
         </el-main>
       </el-container>
     </div>
 
-    <!-- 手机 -->
-    <div v-if="false">
-      <el-container style="height: 500px; border: 1px solid #eee">
-        <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-        </el-aside>
-        <el-container>
-          <el-header style="text-align: right; font-size: 12px">
-            <span></span>
-          </el-header>
-          <el-main> </el-main>
-        </el-container>
+    <!-- mobile -->
+    <div class="mobileContainer" v-if="$device == 'mobile'">
+      <el-container class="container">
+        <el-header class="header" height="auto">
+          <DirectoryTree
+            url="https://api.github.com/repos/v012345/notebook/contents"
+            @done="getReady"
+          ></DirectoryTree>
+        </el-header>
+
+        <el-main
+          element-loading-background="rgba(255, 255, 255, 0.1)"
+          v-loading="loading"
+          class="main"
+        >
+          <Markdown @done="closeLoading"></Markdown>
+        </el-main>
       </el-container>
     </div>
   </div>
@@ -104,6 +114,22 @@ export default {
     background-color: #e7e7e7;
     border-radius: 10px;
     border: 2px solid #ffffff;
+  }
+}
+.mobileContainer {
+  width: 100vw;
+  /deep/ img {
+    max-width: 100%;
+  }
+  .main {
+    max-width: 100%;
+    //  overflow-x: hidden;
+    .Markdown {
+      /deep/ * {
+        //  white-space: nowrap;
+        word-break: break-all;
+      }
+    }
   }
 }
 </style>
