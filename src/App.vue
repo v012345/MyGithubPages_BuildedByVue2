@@ -2,15 +2,19 @@
   <div id="app">
     <div class="PCContainer" v-if="$device == 'PC'">
       <el-container class="container">
-          <el-aside class="aside" v-show="showSummary">
-            <DirectoryTree
-              url="https://api.github.com/repos/v012345/notebook/contents"
-              @done="getReady"
-            ></DirectoryTree>
-          </el-aside>
-          <el-main element-loading-background="rgba(255, 255, 255, 0.1)" v-loading="loading" class="main">
-            <Markdown @done="closeLoading"></Markdown>
-          </el-main>
+        <el-aside class="aside" v-show="showSummary">
+          <DirectoryTree
+            url="https://api.github.com/repos/v012345/notebook/contents"
+            @done="getReady"
+          ></DirectoryTree>
+        </el-aside>
+        <el-main
+          element-loading-background="rgba(255, 255, 255, 0.1)"
+          v-loading="loading"
+          class="main"
+        >
+          <Markdown @done="closeLoading"></Markdown>
+        </el-main>
       </el-container>
     </div>
 
@@ -31,18 +35,39 @@
             <el-row class="row">
               <el-col :span="3">
                 <div class="icon" @click="showSummary = !showSummary">
-                  <li  :class="showSummary?'el-icon-circle-close':'el-icon-circle-plus-outline'"></li>
+                  <li
+                    :class="
+                      showSummary
+                        ? 'el-icon-circle-close'
+                        : 'el-icon-circle-plus-outline'
+                    "
+                  ></li>
                 </div>
               </el-col>
-              <el-col  :span="19"><transition name="el-fade-in-linear"><h1 class="title" v-show="!showSummary" >{{title}}</h1></transition> </el-col>
+              <el-col :span="19"
+                ><transition name="el-fade-in-linear"
+                  ><h1 class="title" v-show="!showSummary">
+                    {{ title }}
+                  </h1></transition
+                >
+              </el-col>
               <el-col :span="2">
                 <transition name="el-fade-in-linear">
-                  <el-avatar v-show="!showSummary" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                  <el-avatar
+                    class="avatar"
+                    v-show="!showSummary"
+                    src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                  ></el-avatar>
                 </transition>
               </el-col>
             </el-row>
           </el-header>
-          <el-main v-show="!showSummary" element-loading-background="rgba(255, 255, 255, 0.1)" v-loading="loading" class="main">
+          <el-main
+            v-show="!showSummary"
+            element-loading-background="rgba(255, 255, 255, 0.1)"
+            v-loading="loading"
+            class="main"
+          >
             <Markdown @done="closeLoading"></Markdown>
           </el-main>
         </el-container>
@@ -74,7 +99,7 @@ export default {
     getReady() {
       this.fullLoading.close();
     },
-    setTitle(title){
+    setTitle(title) {
       this.title = title;
       this.showSummary = false;
     },
@@ -85,21 +110,21 @@ export default {
   data() {
     return {
       loading: false,
-      showSummary : true,
+      showSummary: true,
       title: "",
     };
   },
 };
 </script>
 <style lang="less" scoped>
-.container{
+.container {
   height: 100vh;
   .aside {
     padding-left: 10px;
     padding-top: 10px;
     padding-right: 10px;
     overflow-y: overlay;
-    background-color:rgb(233, 233, 233) ;
+    background-color: rgb(233, 233, 233);
   }
   .main {
     overflow: scroll;
@@ -110,18 +135,22 @@ export default {
   }
 }
 .mobileContainer {
-    .container {
+  .container {
     .header {
       padding-top: 10px;
-      border-bottom: #e6e6e667 2px  solid;
+      border-bottom: #e6e6e667 2px solid;
       .row {
-        .title{
+        .title {
           text-align: center;
           margin-top: 0.5rem;
           white-space: nowrap;
-          text-overflow:ellipsis;
-          overflow:hidden;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
+      /deep/ .el-avatar{
+        width: 2.2rem;
+        height: 2.2rem;
+      }
         .icon {
           font-size: 2.2rem;
           color: #cccccc;
@@ -130,7 +159,6 @@ export default {
     }
   }
 }
-
 
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
