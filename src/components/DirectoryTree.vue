@@ -1,7 +1,7 @@
 <template>
   <div class="DirectoryTree">
     <transition name="el-zoom-in-top">
-      <div v-show="show">
+      <div>
         <el-input
           class="filter"
           placeholder="Filter keyword"
@@ -9,7 +9,6 @@
           prefix-icon="el-icon-search"
         >
         </el-input>
-
         <el-tree
           class="tree"
           :data="tree"
@@ -31,7 +30,7 @@ export default {
       this.$refs.tree.filter(val);
     },
   },
-  mounted() {
+  beforeMount() {
     function generateDirectoryTree(url, DirectoryTree, axios) {
       axios.get(url).then((response) => {
         for (const data of response.data) {
@@ -51,10 +50,9 @@ export default {
         }
       });
     }
-    let DirectoryTree = [];
-    generateDirectoryTree(this.url, DirectoryTree, this.axios);
-    this.tree = DirectoryTree;
-    this.show = true;
+    generateDirectoryTree(this.url, this.tree, this.axios);
+  },
+  mounted() {
     this.$emit("done");
   },
   methods: {
@@ -79,7 +77,6 @@ export default {
     return {
       filterText: "",
       tree: [],
-      show: false,
       defaultProps: {
         children: "children",
         label: "label",
@@ -91,7 +88,7 @@ export default {
 
 <style lang="less" scoped>
 .DirectoryTree {
-  /deep/ .el-input__inner{
+  /deep/ .el-input__inner {
     background-color: rgb(233, 233, 233);
   }
   .tree {

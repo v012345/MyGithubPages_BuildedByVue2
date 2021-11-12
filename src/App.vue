@@ -11,7 +11,7 @@
         <el-main
           element-loading-background="rgba(255, 255, 255, 0.1)"
           v-loading="loading"
-          class="main"
+          class="article"
         >
           <Markdown @done="closeLoading"></Markdown>
         </el-main>
@@ -20,17 +20,16 @@
 
     <!-- mobile -->
     <div class="mobileContainer" v-if="$device == 'mobile'">
-      <el-container class="container">
-        <transition name="el-zoom-in-left">
-          <el-aside width="80vw" class="aside" v-show="showSummary">
-            <DirectoryTree
-              url="https://api.github.com/repos/v012345/notebook/contents"
-              @done="getReady"
-              @title="setTitle"
-            ></DirectoryTree>
-          </el-aside>
-        </transition>
-        <el-container>
+      <div class="container">
+        <div class="aside" :class="{ hidden: !showSummary }">
+          <DirectoryTree
+            url="https://api.github.com/repos/v012345/notebook/contents"
+            @done="getReady"
+            @title="setTitle"
+          ></DirectoryTree>
+        </div>
+
+        <el-container class="main" :class="{ show: !showSummary }">
           <el-header class="header">
             <el-row class="row">
               <el-col :span="3">
@@ -44,33 +43,29 @@
                   ></li>
                 </div>
               </el-col>
-              <el-col :span="19"
-                ><transition name="el-fade-in-linear"
-                  ><h1 class="title" v-show="!showSummary">
-                    {{ title }}
-                  </h1></transition
-                >
+              <el-col :span="19">
+                <h1 class="title">
+                  {{ title }}
+                </h1>
               </el-col>
               <el-col :span="2">
-                <transition name="el-fade-in-linear">
-                  <el-avatar
-                    class="avatar"
-                    v-show="!showSummary"
-                  ><img src="./assets/no.jpg" alt=""></el-avatar>
-                </transition>
+                <el-avatar class="avatar"
+                  ><img src="./assets/no.jpg" alt=""
+                /></el-avatar>
               </el-col>
             </el-row>
           </el-header>
-          <el-main
-            v-show="!showSummary"
-            element-loading-background="rgba(255, 255, 255, 0.1)"
-            v-loading="loading"
-            class="main"
-          >
-            <Markdown @done="closeLoading"></Markdown>
-          </el-main>
+          <div @click="showSummary = false" class="articleContainer">
+            <el-main
+              class="article"
+              element-loading-background="rgba(255, 255, 255, 0.1)"
+              v-loading="loading"
+            >
+              <Markdown @done="closeLoading"></Markdown>
+            </el-main>
+          </div>
         </el-container>
-      </el-container>
+      </div>
     </div>
   </div>
 </template>
@@ -116,57 +111,94 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.container {
-  height: 100vh;
-  .aside {
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-right: 10px;
-    overflow-y: overlay;
-    background-color: rgb(233, 233, 233);
-  }
-  .main {
-    overflow: scroll;
-    padding-top: 0;
-    /deep/ img {
-      max-width: 100%;
-    }
-  }
-}
-.mobileContainer {
+.PCContainer {
   .container {
-    .header {
+    height: 100vh;
+    .aside {
+      padding-left: 10px;
       padding-top: 10px;
-      border-bottom: #e6e6e667 2px solid;
-      .row {
-        .title {
-          text-align: center;
-          margin-top: 0.5rem;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-      /deep/ .el-avatar{
-        width: 2.2rem;
-        height: 2.2rem;
+      padding-right: 10px;
+      overflow-y: overlay;
+      background-color: rgb(233, 233, 233);
+    }
+    .article {
+      overflow: scroll;
+      padding-top: 0;
+      /deep/ img {
+        max-width: 100%;
       }
-        .icon {
-          font-size: 2.2rem;
-          color: #cccccc;
+    }
+  }
+}
+
+.mobileContainer {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  .container {
+    display: flex;
+    width: 180vw;
+    .aside {
+      box-sizing: border-box;
+      height: 100vh;
+      width: 80vw;
+      padding-left: 10px;
+      padding-top: 10px;
+      padding-right: 10px;
+      overflow-y: overlay;
+      background-color: rgb(233, 233, 233);
+      position: relative;
+      transition: left 0.5s;
+      left: 0vw;
+      &.hidden {
+        left: -80vw;
+      }
+    }
+    .main {
+      height: 100vh;
+      position: relative;
+      width: 100vw;
+      left: 0vw;
+      transition: left 0.5s;
+      &.show {
+        left: -80vw;
+      }
+      .header {
+        padding-top: 10px;
+        border-bottom: #e6e6e667 2px solid;
+        .row {
+          .title {
+            text-align: center;
+            margin-top: 0.5rem;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+          /deep/ .el-avatar {
+            width: 2.2rem;
+            height: 2.2rem;
+          }
+          .icon {
+            font-size: 2.2rem;
+            color: #cccccc;
+          }
+        }
+      }
+      .articleContainer {
+        .article {
+          word-break: break-all;
+          height: 100vh;
+          overflow: scroll;
+          padding-top: 0;
+          /deep/ img {
+            max-width: 100%;
+          }
         }
       }
     }
   }
 }
 
-/* ===== Scrollbar CSS ===== */
-/* Firefox */
-* {
-  scrollbar-width: auto;
-  scrollbar-color: #707070 #ffffff;
-}
-
-/* Chrome, Edge, and Safari */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
