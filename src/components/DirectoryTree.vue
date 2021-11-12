@@ -1,5 +1,9 @@
 <template>
-  <div class="DirectoryTree">
+  <div
+    class="DirectoryTree"
+    element-loading-background="rgba(255, 255, 255, 0.1)"
+    v-loading="false"
+  >
     <transition name="el-zoom-in-top">
       <div>
         <el-input
@@ -10,6 +14,7 @@
         >
         </el-input>
         <el-tree
+          v-show="show"
           class="tree"
           :data="tree"
           :props="defaultProps"
@@ -31,9 +36,9 @@ export default {
     },
   },
   beforeMount() {
-    function generateDirectoryTree(url, DirectoryTree, axios) {
+    function generateDirectoryTree(url, DirectoryTree, axios, callback) {
       axios.get(url).then((response) => {
-        for (const data of response.data) {
+        for (const [index, data] of response.data.entries()) {
           let node = {};
           node.id = data.sha;
           node.label = data.name.replace(/\.md/, "");
@@ -44,17 +49,23 @@ export default {
           }
           if (data.type == "dir") {
             node.children = [];
-            generateDirectoryTree(data.url, node.children, axios);
+            generateDirectoryTree(data.url, node.children, axios, () => {});
             DirectoryTree.push(node);
+          }
+          if (index == response.data.length - 1) {
+            callback();
           }
         }
       });
     }
-    generateDirectoryTree(this.url, this.tree, this.axios);
+    new Promise((resolve) => {
+      generateDirectoryTree(this.url, this.tree, this.axios, resolve);
+    }).then(() => {
+      this.$emit("done");
+      this.show = true;
+    });
   },
-  mounted() {
-    this.$emit("done");
-  },
+  mounted() {},
   methods: {
     filterNode(value, data) {
       if (!value) return true;
@@ -77,6 +88,7 @@ export default {
     return {
       filterText: "",
       tree: [],
+      show: false,
       defaultProps: {
         children: "children",
         label: "label",
