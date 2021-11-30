@@ -55,7 +55,6 @@
               </el-col>
             </el-row>
           </el-header>
-          <!-- <div @click="showSummary = false" class="articleContainer"> -->
           <div
             @touchstart="touchstart"
             @touchend="touchend"
