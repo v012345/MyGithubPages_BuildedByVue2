@@ -55,7 +55,11 @@
               </el-col>
             </el-row>
           </el-header>
-          <div @click="showSummary = false" class="articleContainer">
+          <div
+            @touchstart="touchstart"
+            @touchend="touchend"
+            class="articleContainer"
+          >
             <el-main
               class="article"
               element-loading-background="rgba(255, 255, 255, 0.1)"
@@ -76,6 +80,17 @@ import Markdown from "./components/Markdown.vue";
 export default {
   name: "App",
   components: { DirectoryTree, Markdown },
+  data() {
+    return {
+      loading: false,
+      showSummary: true,
+      title: "",
+      startPoint: {
+        x: null,
+        y: null,
+      },
+    };
+  },
   beforeMount() {
     this.fullLoading = this.$loading({
       lock: true,
@@ -89,7 +104,29 @@ export default {
       this.loading = true;
     });
   },
+  watch: {},
   methods: {
+    touchstart($event) {
+      this.showSummary = false;
+      this.startPoint.x = $event.changedTouches[0].screenX;
+      this.startPoint.y = $event.changedTouches[0].screenY;
+    },
+    touchend($event) {
+      $event.changedTouches[0].screenY;
+      let offsetX = $event.changedTouches[0].screenX - this.startPoint.x;
+
+      let offsetY = Math.abs(
+        $event.changedTouches[0].screenY - this.startPoint.y
+      );
+      if (offsetY > 30) {
+        return;
+      }
+      if (offsetX < 60) {
+        return;
+      }
+      this.showSummary = true;
+    },
+
     getReady() {
       this.fullLoading.close();
     },
@@ -100,13 +137,6 @@ export default {
     closeLoading() {
       this.loading = false;
     },
-  },
-  data() {
-    return {
-      loading: false,
-      showSummary: true,
-      title: "",
-    };
   },
 };
 </script>
