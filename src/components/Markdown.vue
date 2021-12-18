@@ -44,6 +44,8 @@ export default {
       highlight: function (code) {
         return hljs.highlightAuto(code).value;
       },
+      baseUrl: "https://raw.githubusercontent.com/v012345/notebook/master/",
+      langPrefix: "hljs language-",
       pedantic: false,
       gfm: true,
       tables: true,
@@ -71,7 +73,7 @@ export default {
     border-radius: 0.1rem;
     overflow: auto;
   }
-  /deep/ table{
+  /deep/ table {
     word-break: break-all;
   }
 
