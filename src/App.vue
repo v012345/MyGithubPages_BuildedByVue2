@@ -44,22 +44,16 @@
                 </div>
               </el-col>
               <el-col :span="19">
-                <h1 class="title">
-                  {{ title }}
-                </h1>
+                <h1 class="title">{{ title }}</h1>
               </el-col>
               <el-col :span="2">
-                <el-avatar class="avatar"
-                  ><img src="./assets/no.jpg" alt=""
-                /></el-avatar>
+                <el-avatar class="avatar">
+                  <img src="./assets/no.jpg" alt />
+                </el-avatar>
               </el-col>
             </el-row>
           </el-header>
-          <div
-            @touchstart="touchstart"
-            @touchend="touchend"
-            class="articleContainer"
-          >
+          <div @touchstart="touchstart" @touchend="touchend" class="articleContainer">
             <el-main
               class="article"
               element-loading-background="rgba(255, 255, 255, 0.1)"
@@ -103,6 +97,10 @@ export default {
     this.$bus.$on("download_url", () => {
       this.loading = true;
     });
+    this.$Echo.channel(`broadcast-test`)
+      .listen('Test', (e) => {
+        console.log(e);
+      });
   },
   watch: {},
   methods: {
