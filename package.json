@@ -19,7 +19,8 @@
     "vue": "^2.6.11",
     "vue-axios": "^3.4.0",
     "vue-loading-overlay": "^3.0.1",
-    "vue-spinners": "^1.0.2"
+    "vue-spinners": "^1.0.2",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
