@@ -11,8 +11,7 @@
           placeholder="Filter keyword"
           v-model="filterText"
           prefix-icon="el-icon-search"
-        >
-        </el-input>
+        ></el-input>
         <el-tree
           v-show="show"
           class="tree"
@@ -21,8 +20,7 @@
           :filter-node-method="filterNode"
           ref="tree"
           @node-click="emitUrl"
-        >
-        </el-tree>
+        ></el-tree>
       </div>
     </transition>
   </div>
@@ -47,9 +45,9 @@ export default {
             node.download_url = data.download_url;
             DirectoryTree.push(node);
           }
-          if (data.type == "dir") {
+          if (data.type == "dir" && data.name != "assets") {
             node.children = [];
-            generateDirectoryTree(data.url, node.children, axios, () => {});
+            generateDirectoryTree(data.url, node.children, axios, () => { });
             DirectoryTree.push(node);
           }
           if (index == response.data.length - 1) {
@@ -65,7 +63,7 @@ export default {
       this.show = true;
     });
   },
-  mounted() {},
+  mounted() { },
   methods: {
     filterNode(value, data) {
       if (!value) return true;
